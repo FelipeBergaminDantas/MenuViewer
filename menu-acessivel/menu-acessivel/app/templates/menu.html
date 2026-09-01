@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Cardápio{% endblock %}
+
+{% block content %}
+<h1 data-i18n="titulo_cardapio">Nosso Cardápio</h1>
+
+{% for categoria in categorias %}
+<section class="categoria" aria-labelledby="cat-{{ categoria.id }}">
+    <h2 id="cat-{{ categoria.id }}">{{ categoria.nome }}</h2>
+
+    <div class="pratos-grid">
+        {% for prato in categoria.pratos %}
+        <article class="prato-card">
+            <button type="button" class="prato-imagem-btn zoomable"
+                    data-img="{{ url_for('static', filename='img/pratos/' ~ prato.imagem) if prato.imagem else '' }}"
+                    aria-label="Ampliar imagem de {{ prato.nome }}">
+                {% if prato.imagem %}
+                <img src="{{ url_for('static', filename='img/pratos/' ~ prato.imagem) }}"
+                     alt="{{ prato.imagem_alt or prato.nome }}" loading="lazy">
+                {% else %}
+                <span class="sem-imagem">Sem imagem</span>
+                {% endif %}
+            </button>
+
+            <div class="prato-info">
+                <h3>{{ prato.nome }}</h3>
+                <p class="prato-descricao">{{ prato.descricao }}</p>
+                <p class="prato-preco">R$ {{ "%.2f"|format(prato.preco) }}</p>
+
+                <ul class="prato-tags" aria-label="Informações do prato">
+                    {% if prato.vegano %}<li class="tag tag-vegano">🌱 Vegano</li>{% endif %}
+                    {% if prato.sem_gluten %}<li class="tag tag-gluten">🌾 Sem glúten</li>{% endif %}
+                    {% if prato.picante %}<li class="tag tag-picante">🌶️ Picante</li>{% endif %}
+                </ul>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endfor %}
+
+<div id="zoom-overlay" class="zoom-overlay hidden" role="dialog" aria-modal="true" aria-label="Imagem ampliada">
+    <button type="button" id="zoom-close" aria-label="Fechar imagem ampliada">×</button>
+    <img id="zoom-image" src="" alt="">
+</div>
+{% endblock %}
