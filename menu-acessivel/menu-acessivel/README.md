@@ -1,3 +1,6 @@
+<img width="2752" height="1536" alt="Gemini_Generated_Image_jt1scljt1scljt1s" src="https://github.com/user-attachments/assets/d35ca042-1c81-4b05-9664-2618044e5cf5" />
+
+
 # 🍽️ Cardápio Acessível
 
 Um sistema de cardápio digital para restaurantes com foco em **acessibilidade**, feito para ser simples, leve e fácil de estender via colaborações no GitHub.
