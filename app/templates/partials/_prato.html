@@ -1,0 +1,62 @@
+{#
+  Um prato do cardápio. A ordem do HTML é a mesma ordem visual e de leitura:
+  nome → preço → foto → descrição → características → alérgenos → ingredientes.
+  O <article> é rotulado pelo nome, então leitores de tela anunciam o prato como
+  uma unidade ("Bruschetta Clássica, artigo").
+#}
+{# `nivel_titulo`: 3 na página completa (abaixo do h2 da categoria), 2 no modo simplificado. #}
+{% set nivel = nivel_titulo|default(3) %}
+<article class="prato" id="prato-{{ prato.id }}" aria-labelledby="prato-{{ prato.id }}-nome"
+         tabindex="-1" data-prato data-nome="{{ prato.nome }}">
+    <header class="prato-cabecalho">
+        <h{{ nivel }} class="prato-nome" id="prato-{{ prato.id }}-nome">{{ prato.nome }}</h{{ nivel }}>
+        <p class="prato-preco">
+            <span class="apenas-leitor">{{ t('prato.preco') }}:</span>
+            <data value="{{ prato.preco }}">{{ prato.preco|moeda }}</data>
+        </p>
+    </header>
+
+    {% if prato.imagem %}
+    <figure class="prato-foto">
+        <img src="{{ url_for('static', filename='img/pratos/' ~ prato.imagem) }}"
+             alt="{{ prato.imagem_alt or '' }}" loading="lazy" width="400" height="300">
+        {% if not prefs.simplificado %}
+        <button type="button" class="btn btn-ampliar" data-ampliar-foto
+                data-src="{{ url_for('static', filename='img/pratos/' ~ prato.imagem) }}"
+                data-alt="{{ prato.imagem_alt or '' }}" data-titulo="{{ prato.nome }}">
+            <span aria-hidden="true">🔍</span> {{ t('prato.ampliar_foto') }}<span class="apenas-leitor">: {{ prato.nome }}</span>
+        </button>
+        {% endif %}
+    </figure>
+    {% endif %}
+
+    <p class="prato-descricao" data-descricao>{{ prato.descricao }}</p>
+
+    {% set caracteristicas = [] %}
+    {% if prato.vegano %}{% set _ = caracteristicas.append(('🌱', t('dieta.vegano'))) %}
+    {% elif prato.vegetariano %}{% set _ = caracteristicas.append(('🥦', t('dieta.vegetariano'))) %}{% endif %}
+    {% if prato.picante %}{% set _ = caracteristicas.append(('🌶️', t('prato.picante'))) %}{% endif %}
+    {% if caracteristicas %}
+    <ul class="prato-tags" role="list" aria-label="{{ t('prato.caracteristicas') }}">
+        {% for icone, texto in caracteristicas %}
+        <li class="tag"><span aria-hidden="true">{{ icone }}</span> {{ texto }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if prato.ingredientes %}
+    <p class="prato-alergenos" data-alergenos>
+        {% if prato.alergenos %}
+        <strong>{{ t('prato.contem') }}</strong>
+        {% for alergeno in prato.alergenos %}{{ t('alergeno.' ~ alergeno.codigo)|lower }}{{ ", " if not loop.last else "." }}{% endfor %}
+        {% else %}
+        {{ t('prato.sem_alergenos') }}
+        {% endif %}
+    </p>
+
+    <details class="prato-ingredientes" data-ingredientes>
+        <summary>{{ t('prato.ingredientes') }}<span class="apenas-leitor">: {{ prato.nome }}</span></summary>
+        <p data-lista-ingredientes>{{ prato.ingredientes|map(attribute='nome')|join(', ')|capitalize }}.</p>
+    </details>
+    {% endif %}
+</article>

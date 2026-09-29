@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('menu.titulo') }} · {{ t('app.nome') }}{% endblock %}
+
+{% block content %}
+<h1>{{ t('menu.titulo') }}</h1>
+
+{% include "partials/_filtros.html" %}
+
+{% if categorias %}
+<nav class="nav-categorias" aria-label="{{ t('menu.nav_categorias') }}">
+    <ul role="list">
+        {% for categoria in categorias %}
+        <li><a href="#categoria-{{ categoria.id }}">{{ categoria.nome }}</a></li>
+        {% endfor %}
+    </ul>
+</nav>
+
+{% for categoria in categorias %}
+<section class="categoria" id="categoria-{{ categoria.id }}" aria-labelledby="categoria-{{ categoria.id }}-titulo">
+    <h2 id="categoria-{{ categoria.id }}-titulo">{{ categoria.nome }}</h2>
+    <ul class="grade-pratos" role="list">
+        {% for prato in categoria.pratos %}
+        <li>{% include "partials/_prato.html" %}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endfor %}
+{% else %}
+{% include "partials/_sem_resultados.html" %}
+{% endif %}
+
+{% include "partials/_dialogo_foto.html" %}
+{% endblock %}

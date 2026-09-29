@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('qrcode.titulo') }} · {{ t('app.nome') }}{% endblock %}
+
+{% block content %}
+<div class="pagina-qrcode">
+    <h1>{{ t('qrcode.titulo') }}</h1>
+    <p class="nao-imprimir">{{ t('qrcode.instrucao_equipe') }}</p>
+
+    <figure class="cartao-qrcode">
+        <img src="{{ url_for('qrcode.imagem', formato='svg') }}"
+             alt="{{ t('qrcode.alt', url=url_cardapio) }}" width="290" height="290">
+        <figcaption>
+            <p class="cartao-chamada">{{ t('qrcode.chamada') }}</p>
+            <p class="cartao-url">{{ url_cardapio }}</p>
+        </figcaption>
+    </figure>
+
+    <div class="linha-botoes nao-imprimir">
+        <button type="button" class="btn btn-primario" data-imprimir hidden>{{ t('qrcode.imprimir') }}</button>
+        <a class="btn" href="{{ url_for('qrcode.imagem', formato='png', escala=20, download=1) }}">{{ t('qrcode.baixar_png') }}</a>
+        <a class="btn" href="{{ url_for('qrcode.imagem', formato='svg', download=1) }}">{{ t('qrcode.baixar_svg') }}</a>
+    </div>
+</div>
+{% endblock %}

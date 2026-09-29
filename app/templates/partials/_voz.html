@@ -1,0 +1,44 @@
+{#
+  Comandos de voz. Depende da Web Speech API do navegador, então os controles
+  começam ocultos e `voz.js` os revela apenas se houver suporte.
+#}
+<div class="grupo grupo-voz" role="group" aria-labelledby="voz-titulo" data-voz>
+    {# Mesmo papel das <legend> dos outros grupos do painel (não é um título de seção da página). #}
+    <p id="voz-titulo" class="grupo-titulo">{{ t('voz.titulo') }}</p>
+
+    <div class="linha-botoes" data-voz-controles hidden>
+        <button type="button" class="btn btn-alternar" aria-pressed="false" data-voz-alternar>
+            <span aria-hidden="true">🎤</span> {{ t('voz.ativar') }}
+        </button>
+        <form method="post" action="{{ url_for('preferencias.atualizar') }}" data-form-preferencias>
+            <input type="hidden" name="next" value="{{ request.full_path.rstrip('?') }}">
+            <button type="submit" name="acao" value="voz_falada" class="btn btn-alternar"
+                    aria-pressed="{{ 'true' if prefs.voz_falada else 'false' }}">
+                {{ t('voz.respostas_faladas') }}
+            </button>
+        </form>
+    </div>
+
+    <p class="dica" data-voz-sem-suporte hidden>{{ t('voz.sem_suporte') }}</p>
+    <noscript><p class="dica">{{ t('voz.sem_javascript') }}</p></noscript>
+    <p class="dica" data-voz-privacidade hidden>{{ t('voz.privacidade') }}</p>
+
+    <details class="ajuda-voz">
+        <summary>{{ t('voz.ver_comandos') }}</summary>
+        <ul>
+            {% for frase, descricao in t('voz.ajuda') %}
+            <li><strong>“{{ frase }}”</strong> — {{ descricao }}</li>
+            {% endfor %}
+        </ul>
+    </details>
+
+    {# Configuração lida pelo JS: frases de cada comando e mensagens no idioma atual. #}
+    <script type="application/json" id="voz-config">
+        {{ {
+            "idioma": lang_voz,
+            "respostasFaladas": prefs.voz_falada,
+            "comandos": ts('voz.comandos'),
+            "mensagens": ts('voz.mensagens'),
+        } | tojson }}
+    </script>
+</div>

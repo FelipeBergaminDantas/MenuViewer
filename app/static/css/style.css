@@ -1,0 +1,534 @@
+/* ==========================================================================
+   Cardápio Acessível — estilos
+   Organização: tokens → base → foco → componentes → modos (contraste,
+   movimento reduzido, simplificado) → impressão.
+   Tamanhos em rem: o painel de fonte escala tudo via --escala-fonte.
+   ========================================================================== */
+
+:root {
+    --escala-fonte: 1;
+
+    --cor-fundo: #ffffff;
+    --cor-superficie: #faf7f3;
+    --cor-texto: #1a1a1a;
+    --cor-texto-suave: #4a4a4a;          /* 8.9:1 sobre branco */
+    --cor-primaria: #9c4418;             /* 6.3:1 sobre branco */
+    --cor-primaria-texto: #ffffff;
+    --cor-borda: #8a8a8a;                /* bordas de controles: 3.4:1 (WCAG 1.4.11) */
+    --cor-borda-suave: #e2ddd6;
+    --cor-topo: #262626;
+    --cor-topo-texto: #ffffff;
+    --cor-aviso-fundo: #fff4d6;
+    --cor-aviso-borda: #8a6100;
+
+    --cor-foco: #0b57d0;
+    --cor-foco-halo: #ffffff;
+
+    --raio: 10px;
+    --alvo-min: 2.75rem;                 /* 44px com fonte padrão */
+    --transicao: 150ms ease;
+}
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+    /* 100% respeita o tamanho de fonte que a pessoa configurou no navegador. */
+    font-size: calc(100% * var(--escala-fonte));
+    scroll-padding-top: 1rem;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    line-height: 1.55;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+a { color: var(--cor-primaria); text-underline-offset: 0.15em; }
+a:hover { text-decoration-thickness: 2px; }
+
+h1, h2, h3 { line-height: 1.2; }
+h1 { font-size: 2rem; margin: 1.5rem 0 1rem; }
+
+[hidden] { display: none !important; }
+
+/* Texto visível apenas para leitores de tela. */
+.apenas-leitor {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------- Indicador de foco ----------
+   Anel duplo (azul + halo branco): visível sobre fundos claros e escuros.
+   :focus-visible mostra o anel na navegação por teclado sem poluir o clique. */
+
+:focus-visible {
+    outline: 3px solid var(--cor-foco);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--cor-foco-halo);
+}
+
+/* Elementos que recebem foco por script (títulos, pratos) também mostram o anel. */
+[tabindex="-1"]:focus { outline: 3px solid var(--cor-foco); outline-offset: 4px; }
+main:focus { outline: none; }
+
+/* ---------- Link "pular para o conteúdo" ---------- */
+
+.link-pular {
+    position: absolute;
+    left: 1rem;
+    top: -10rem;
+    z-index: 1000;
+    padding: 0.75rem 1rem;
+    background: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+    font-weight: 700;
+    border-radius: 0 0 var(--raio) var(--raio);
+}
+.link-pular:focus { top: 0; }
+
+/* ---------- Botões ---------- */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-width: var(--alvo-min);
+    min-height: var(--alvo-min);
+    padding: 0.5rem 1rem;
+    font: inherit;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--cor-texto);
+    background: var(--cor-fundo);
+    border: 2px solid var(--cor-borda);
+    border-radius: var(--raio);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--transicao), border-color var(--transicao);
+}
+.btn:hover { border-color: var(--cor-primaria); background: var(--cor-superficie); }
+
+.btn-primario {
+    background: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+}
+.btn-primario:hover { background: #7f3713; border-color: #7f3713; }
+
+/* Botão de alternar: estado comunicado por aria-pressed e também visualmente
+   (não só por cor: aparece uma marca de seleção). */
+.btn-alternar[aria-pressed="true"] {
+    background: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+}
+.btn-alternar[aria-pressed="true"]::before { content: "✓"; font-weight: 700; }
+
+.btn-grande {
+    min-height: 3.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.15rem;
+}
+
+.linha-botoes { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+
+/* ---------- Topo e painéis (<details>) ---------- */
+
+.topo {
+    background: var(--cor-topo);
+    color: var(--cor-topo-texto);
+}
+.topo-interno {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+}
+.marca { margin: 0; font-size: 1.15rem; font-weight: 700; }
+.marca a { color: inherit; text-decoration: none; }
+.marca a:hover { text-decoration: underline; }
+
+.painel > summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--alvo-min);
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    border: 2px solid currentColor;
+    border-radius: var(--raio);
+    cursor: pointer;
+    list-style: none;
+}
+.painel > summary::-webkit-details-marker { display: none; }
+.painel > summary::after { content: "▾"; transition: transform var(--transicao); }
+.painel[open] > summary::after { transform: rotate(180deg); }
+
+.painel-a11y { flex-basis: auto; }
+.painel-a11y[open] { flex-basis: 100%; }
+.painel-a11y .painel-conteudo {
+    margin-top: 0.75rem;
+    padding: 1rem;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    border-radius: var(--raio);
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+
+.grupo { border: 0; margin: 0; padding: 0; min-width: 0; }
+.grupo + .grupo { margin-top: 1.25rem; }
+.grupo legend, .grupo-titulo {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    padding: 0;
+}
+.dica { margin: 0.5rem 0 0; color: var(--cor-texto-suave); font-size: 0.95rem; }
+.grupo-voz .linha-botoes form { display: contents; }
+
+.ajuda-voz { margin-top: 0.75rem; }
+.ajuda-voz summary { cursor: pointer; min-height: var(--alvo-min); align-items: center; font-weight: 600; list-style: none; }
+.ajuda-voz ul { padding-left: 1.25rem; margin: 0.25rem 0 0; }
+
+/* ---------- Conteúdo principal ---------- */
+
+main {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 0 1rem 3rem;
+}
+
+/* ---------- Filtros ---------- */
+
+.painel-filtros {
+    margin: 0 0 1rem;
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio);
+    padding: 0.75rem;
+}
+.painel-filtros > summary { border-color: var(--cor-borda); background: var(--cor-fundo); }
+.form-filtros { display: grid; gap: 1.25rem; margin-top: 1rem; }
+
+.contador {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+}
+
+.lista-opcoes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+}
+.opcao {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: var(--alvo-min);
+    padding: 0.4rem 0.75rem;
+    background: var(--cor-fundo);
+    border: 2px solid var(--cor-borda-suave);
+    border-radius: var(--raio);
+    cursor: pointer;
+}
+.opcao:has(input:checked) { border-color: var(--cor-primaria); }
+.opcao input { width: 1.4rem; height: 1.4rem; margin: 0; accent-color: var(--cor-primaria); flex-shrink: 0; }
+
+.aviso {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    background: var(--cor-aviso-fundo);
+    border-left: 4px solid var(--cor-aviso-borda);
+    border-radius: 4px;
+}
+
+.resumo-filtro { font-weight: 600; margin: 0 0 1rem; }
+.resumo-criterios { font-weight: 400; }
+
+/* ---------- Navegação por categorias ---------- */
+
+.nav-categorias ul {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.nav-categorias a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--alvo-min);
+    padding: 0.4rem 1rem;
+    border: 2px solid var(--cor-primaria);
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.nav-categorias a:hover { background: var(--cor-superficie); }
+
+/* ---------- Categorias e pratos ---------- */
+
+.categoria > h2 {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 3px solid var(--cor-primaria);
+}
+
+.grade-pratos, .lista-simplificada { list-style: none; margin: 0; padding: 0; }
+.grade-pratos {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+.grade-pratos > li, .lista-simplificada > li { display: flex; }
+
+.prato {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1rem;
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio);
+    scroll-margin-top: 1rem;
+}
+/* Prato selecionado por voz. */
+.prato.prato-atual { border: 3px solid var(--cor-foco); }
+
+.prato-cabecalho {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+}
+.prato-nome { font-size: 1.2rem; margin: 0; }
+.prato-preco { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--cor-primaria); white-space: nowrap; }
+.prato-descricao { margin: 0; }
+
+.prato-foto { margin: 0; position: relative; }
+.prato-foto img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: calc(var(--raio) - 4px);
+}
+.btn-ampliar { margin-top: 0.5rem; width: 100%; }
+
+.prato-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; }
+.tag {
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+}
+
+.prato-alergenos { margin: 0; font-size: 0.95rem; }
+
+.prato-ingredientes summary,
+.ajuda-voz summary {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    min-height: var(--alvo-min);
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--cor-primaria);
+}
+.prato-ingredientes summary::before,
+.ajuda-voz summary::before { content: "▸"; display: inline-block; transition: transform var(--transicao); }
+.prato-ingredientes[open] summary::before,
+.ajuda-voz[open] summary::before { transform: rotate(90deg); }
+.prato-ingredientes summary::-webkit-details-marker,
+.ajuda-voz summary::-webkit-details-marker { display: none; }
+.prato-ingredientes summary { list-style: none; }
+.prato-ingredientes p { margin: 0.25rem 0 0; }
+
+.sem-resultados {
+    padding: 2rem;
+    text-align: center;
+    background: var(--cor-superficie);
+    border-radius: var(--raio);
+}
+
+/* ---------- Diálogo de foto ---------- */
+
+.dialogo-foto {
+    max-width: min(90vw, 56rem);
+    padding: 1rem;
+    border: 0;
+    border-radius: var(--raio);
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+}
+.dialogo-foto::backdrop { background: rgb(0 0 0 / 0.8); }
+.dialogo-foto h2 { margin: 0 0 0.75rem; font-size: 1.25rem; }
+.dialogo-foto img { max-height: 70vh; margin: 0 auto 1rem; border-radius: 6px; }
+.dialogo-foto form { display: flex; justify-content: flex-end; }
+
+/* ---------- Status dos comandos de voz ---------- */
+
+.status-voz {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 900;
+    max-width: min(26rem, calc(100vw - 2rem));
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--cor-topo);
+    color: var(--cor-topo-texto);
+    border-radius: var(--raio);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.3);
+    font-weight: 600;
+}
+.status-voz.ouvindo .status-voz-icone { animation: pulsar 1.2s ease-in-out infinite; }
+@keyframes pulsar { 50% { transform: scale(1.3); } }
+
+/* ---------- Rodapé ---------- */
+
+.rodape {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 5rem;
+    border-top: 1px solid var(--cor-borda-suave);
+}
+
+/* ---------- QR Code ---------- */
+
+.pagina-qrcode { max-width: 36rem; }
+.cartao-qrcode {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    border: 2px solid var(--cor-texto);
+    border-radius: var(--raio);
+    text-align: center;
+    background: #fff;
+    color: #000;
+}
+.cartao-qrcode img { margin: 0 auto; width: 18rem; max-width: 100%; }
+.cartao-chamada { font-size: 1.3rem; font-weight: 700; margin: 1rem 0 0.25rem; }
+.cartao-url { margin: 0; word-break: break-all; }
+
+/* ==========================================================================
+   Modo: alto contraste
+   ========================================================================== */
+
+.alto-contraste {
+    --cor-fundo: #000000;
+    --cor-superficie: #000000;
+    --cor-texto: #ffffff;
+    --cor-texto-suave: #ffffff;
+    --cor-primaria: #ffe14d;
+    --cor-primaria-texto: #000000;
+    --cor-borda: #ffffff;
+    --cor-borda-suave: #ffffff;
+    --cor-topo: #000000;
+    --cor-topo-texto: #ffffff;
+    --cor-aviso-fundo: #000000;
+    --cor-aviso-borda: #ffe14d;
+    --cor-foco: #00e5ff;
+    --cor-foco-halo: #000000;
+}
+.alto-contraste .topo { border-bottom: 2px solid #fff; }
+.alto-contraste a { color: var(--cor-primaria); }
+.alto-contraste .btn-primario:hover { background: #fff; border-color: #fff; }
+.alto-contraste .prato-foto img { filter: contrast(1.1); }
+
+/* ==========================================================================
+   Modo: movimento reduzido (preferência manual ou do sistema)
+   ========================================================================== */
+
+.movimento-reduzido *, .movimento-reduzido *::before, .movimento-reduzido *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+@media (prefers-reduced-motion: no-preference) {
+    html:not(.movimento-reduzido) { scroll-behavior: smooth; }
+}
+
+/* ==========================================================================
+   Modo: navegação simplificada
+   Uma coluna, alvos maiores, sem decoração. O conteúdo dos pratos continua todo lá.
+   ========================================================================== */
+
+.modo-simplificado { --alvo-min: 3.5rem; }
+.modo-simplificado main { max-width: 42rem; }
+.modo-simplificado .btn { font-size: 1.1rem; }
+
+.barra-simplificada {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin: 1rem 0;
+}
+.aviso-modo { margin: 0; font-weight: 600; }
+
+.passo { margin: 1.5rem 0 0; font-weight: 600; color: var(--cor-texto-suave); }
+.categoria-simplificada h1 { margin-top: 0.25rem; }
+
+.lista-simplificada { display: grid; gap: 1rem; }
+.modo-simplificado .prato { padding: 1.25rem; }
+.modo-simplificado .prato-nome { font-size: 1.4rem; margin: 0; }
+.modo-simplificado .prato-foto img { max-height: 14rem; }
+
+.nav-passos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.nav-passos .btn { flex: 1 1 14rem; }
+.nav-passos [rel="next"] { margin-left: auto; }
+
+/* ==========================================================================
+   Impressão (usado principalmente na página do QR Code)
+   ========================================================================== */
+
+@media print {
+    .topo, .rodape, .nao-imprimir, .link-pular, .status-voz { display: none !important; }
+    body { background: #fff; color: #000; }
+    .cartao-qrcode { border: 2px solid #000; break-inside: avoid; }
+}

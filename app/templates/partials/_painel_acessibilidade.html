@@ -1,0 +1,71 @@
+{#
+  Painel de acessibilidade. Usa <details>/<summary> nativos (abre/fecha por
+  teclado sem JavaScript) e formulários comuns: tudo funciona sem JS. Com JS,
+  `preferencias.js` aplica as mudanças visuais sem recarregar a página.
+#}
+{% set voltar_para = request.full_path.rstrip('?') %}
+<details class="painel painel-a11y" id="painel-acessibilidade">
+    <summary><span aria-hidden="true">⚙️</span> {{ t('a11y.titulo_painel') }}</summary>
+
+    <div class="painel-conteudo">
+        <form method="post" action="{{ url_for('preferencias.atualizar') }}" data-form-preferencias>
+            <input type="hidden" name="next" value="{{ voltar_para }}">
+
+            <fieldset class="grupo">
+                <legend>{{ t('a11y.tamanho_texto') }}</legend>
+                <div class="linha-botoes">
+                    <button type="submit" name="acao" value="fonte_menos" class="btn">
+                        <span aria-hidden="true">A−</span> {{ t('a11y.fonte_menor') }}
+                    </button>
+                    <button type="submit" name="acao" value="fonte_padrao" class="btn">
+                        {{ t('a11y.fonte_padrao') }}
+                    </button>
+                    <button type="submit" name="acao" value="fonte_mais" class="btn">
+                        <span aria-hidden="true">A+</span> {{ t('a11y.fonte_maior') }}
+                    </button>
+                </div>
+                <p class="dica">
+                    {{ t('a11y.tamanho_atual') }}
+                    <output data-saida-fonte>{{ prefs.fonte_percentual }}%</output>
+                </p>
+            </fieldset>
+
+            <fieldset class="grupo">
+                <legend>{{ t('a11y.exibicao') }}</legend>
+                <div class="linha-botoes">
+                    <button type="submit" name="acao" value="contraste" class="btn btn-alternar"
+                            aria-pressed="{{ 'true' if prefs.contraste else 'false' }}">
+                        {{ t('a11y.alto_contraste') }}
+                    </button>
+                    <button type="submit" name="acao" value="movimento_reduzido" class="btn btn-alternar"
+                            aria-pressed="{{ 'true' if prefs.movimento_reduzido else 'false' }}">
+                        {{ t('a11y.reduzir_movimento') }}
+                    </button>
+                    {# Muda o layout da página inteira: sempre recarrega. #}
+                    <button type="submit" name="acao" value="simplificado" class="btn btn-alternar"
+                            aria-pressed="{{ 'true' if prefs.simplificado else 'false' }}" data-recarregar>
+                        {{ t('a11y.modo_simplificado') }}
+                    </button>
+                </div>
+            </fieldset>
+        </form>
+
+        <form method="post" action="{{ url_for('preferencias.atualizar') }}" class="grupo-form">
+            <input type="hidden" name="next" value="{{ voltar_para }}">
+            <input type="hidden" name="acao" value="idioma">
+            <fieldset class="grupo">
+                <legend>{{ t('a11y.idioma') }}</legend>
+                <div class="linha-botoes">
+                    {% for codigo, nome in idiomas %}
+                    <button type="submit" name="valor" value="{{ codigo }}" class="btn btn-alternar"
+                            lang="{{ codigo }}" aria-pressed="{{ 'true' if codigo == idioma else 'false' }}">
+                        {{ nome }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </fieldset>
+        </form>
+
+        {% include "partials/_voz.html" %}
+    </div>
+</details>
