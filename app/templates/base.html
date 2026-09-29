@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="{{ lang_html }}"
+      class="{{ prefs.classes_html }}"
+      style="--escala-fonte: {{ prefs.fonte }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>{% block title %}{{ t('app.nome') }}{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🍽️%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <a href="#conteudo" class="link-pular">{{ t('a11y.pular_para_conteudo') }}</a>
+
+    <header class="topo">
+        <div class="topo-interno">
+            <p class="marca"><a href="{{ url_for('menu.index') }}">{{ t('app.nome') }}</a></p>
+            {% include "partials/_painel_acessibilidade.html" %}
+        </div>
+    </header>
+
+    <main id="conteudo" tabindex="-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="rodape">
+        <a href="{{ url_for('qrcode.pagina') }}">{{ t('qrcode.link_rodape') }}</a>
+    </footer>
+
+    {# Indicador visual dos comandos de voz (as mensagens para leitores de tela vão em #anuncios). #}
+    <div class="status-voz" data-voz-status hidden>
+        <span class="status-voz-icone" aria-hidden="true">🎤</span>
+        <span data-voz-status-texto></span>
+    </div>
+
+    {# Região única para confirmar ações a leitores de tela (fonte, contraste, voz...). #}
+    <div id="anuncios" class="apenas-leitor" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    {% block scripts %}
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

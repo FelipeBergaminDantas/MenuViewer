@@ -1,0 +1,54 @@
+{#
+  Modo de navegação simplificada: uma categoria por vez, botões grandes,
+  textos curtos e sem elementos decorativos. A navegação usa links reais
+  (?categoria=<id>), então funciona sem JS e o botão "voltar" do navegador também.
+#}
+{% extends "base.html" %}
+
+{% block title -%}
+{% if atual %}{{ atual.nome }} ({{ indice + 1 }}/{{ categorias|length }}) · {% endif %}{{ t('menu.titulo') }}
+{%- endblock %}
+
+{% block content %}
+<div class="barra-simplificada">
+    <p class="aviso-modo">{{ t('simplificado.ativo') }}</p>
+    <form method="post" action="{{ url_for('preferencias.atualizar') }}">
+        <input type="hidden" name="next" value="{{ url_for('menu.index', **filtro.to_args()) }}">
+        <button type="submit" name="acao" value="simplificado" class="btn">{{ t('simplificado.sair') }}</button>
+    </form>
+</div>
+
+{% include "partials/_filtros.html" %}
+
+{% if atual %}
+<section class="categoria categoria-simplificada" aria-labelledby="categoria-atual-titulo">
+    <p class="passo" id="passo-atual">{{ t('simplificado.passo', atual=indice + 1, total=categorias|length) }}</p>
+    <h1 id="categoria-atual-titulo" tabindex="-1"
+        {% if request.args.get('categoria') %}data-focar-ao-carregar{% endif %}>{{ atual.nome }}</h1>
+
+    {% set nivel_titulo = 2 %}
+    <ul class="lista-simplificada" role="list">
+        {% for prato in atual.pratos %}
+        <li>{% include "partials/_prato.html" %}</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<nav class="nav-passos" aria-label="{{ t('simplificado.nav') }}">
+    {% if anterior %}
+    <a class="btn btn-grande" rel="prev" data-categoria-anterior
+       href="{{ url_for('menu.index', categoria=anterior.id, **filtro.to_args()) }}">
+        <span aria-hidden="true">←</span> {{ t('simplificado.anterior') }}: {{ anterior.nome }}
+    </a>
+    {% endif %}
+    {% if proxima %}
+    <a class="btn btn-grande btn-primario" rel="next" data-categoria-proxima
+       href="{{ url_for('menu.index', categoria=proxima.id, **filtro.to_args()) }}">
+        {{ t('simplificado.proxima') }}: {{ proxima.nome }} <span aria-hidden="true">→</span>
+    </a>
+    {% endif %}
+</nav>
+{% else %}
+{% include "partials/_sem_resultados.html" %}
+{% endif %}
+{% endblock %}

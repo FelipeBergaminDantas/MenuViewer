@@ -1,0 +1,11 @@
+{#
+  Foto ampliada. <dialog> nativo com showModal(): prende o foco dentro do
+  diálogo, fecha com Esc e deixa o resto da página inerte — sem ARIA manual.
+#}
+<dialog class="dialogo-foto" id="dialogo-foto" aria-labelledby="dialogo-foto-titulo">
+    <h2 id="dialogo-foto-titulo" data-dialogo-titulo></h2>
+    <img src="" alt="" data-dialogo-imagem>
+    <form method="dialog">
+        <button type="submit" class="btn btn-primario">{{ t('prato.fechar_foto') }}</button>
+    </form>
+</dialog>

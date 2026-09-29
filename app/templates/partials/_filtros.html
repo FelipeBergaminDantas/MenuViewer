@@ -1,0 +1,71 @@
+{#
+  Filtros alimentares e de alergias. Formulário GET comum: a URL filtrada pode
+  ser salva/compartilhada e funciona sem JavaScript. A página só muda quando o
+  usuário confirma em "Aplicar" (sem mudança de contexto inesperada — WCAG 3.2.2).
+#}
+{% set qtd_ativos = filtro.dietas|length + filtro.excluir_alergenos|length %}
+<details class="painel painel-filtros" {% if filtro.ativo %}open{% endif %}>
+    <summary>
+        <span aria-hidden="true">🥗</span> {{ t('filtros.titulo') }}
+        {% if qtd_ativos %}<span class="contador">{{ tp('filtros.ativos', qtd_ativos) }}</span>{% endif %}
+    </summary>
+
+    <form method="get" action="{{ url_for('menu.index') }}" class="painel-conteudo form-filtros">
+        <input type="hidden" name="aplicado" value="1">
+
+        <fieldset class="grupo">
+            <legend>{{ t('filtros.dietas_legenda') }}</legend>
+            <ul class="lista-opcoes" role="list">
+                {% for dieta in dietas %}
+                <li>
+                    <label class="opcao">
+                        <input type="checkbox" name="dieta" value="{{ dieta }}"
+                               {% if dieta in filtro.dietas %}checked{% endif %}>
+                        <span>{{ t('dieta.' ~ dieta) }}</span>
+                    </label>
+                </li>
+                {% endfor %}
+            </ul>
+        </fieldset>
+
+        <fieldset class="grupo">
+            <legend>{{ t('filtros.alergias_legenda') }}</legend>
+            <p class="dica" id="filtros-alergias-dica">{{ t('filtros.alergias_dica') }}</p>
+            <ul class="lista-opcoes" role="list">
+                {% for alergeno in alergenos %}
+                <li>
+                    <label class="opcao">
+                        <input type="checkbox" name="sem" value="{{ alergeno.codigo }}"
+                               aria-describedby="filtros-alergias-dica"
+                               {% if alergeno.codigo in filtro.excluir_alergenos %}checked{% endif %}>
+                        <span>{{ t('alergeno.' ~ alergeno.codigo) }}</span>
+                    </label>
+                </li>
+                {% endfor %}
+            </ul>
+        </fieldset>
+
+        <p class="aviso">{{ t('filtros.aviso_contaminacao') }}</p>
+
+        <div class="linha-botoes">
+            <button type="submit" class="btn btn-primario">{{ t('filtros.aplicar') }}</button>
+            {% if filtro.ativo %}
+            <a class="btn" href="{{ url_for('menu.index') }}">{{ t('filtros.limpar') }}</a>
+            {% endif %}
+        </div>
+    </form>
+</details>
+
+{# Resumo do resultado. Recebe foco após aplicar o filtro para o leitor de tela anunciá-lo. #}
+<p class="resumo-filtro" id="resumo-filtro" tabindex="-1"
+   {% if request.args.get('aplicado') %}data-focar-ao-carregar{% endif %}>
+    {{ tp('filtros.resultado', total_pratos) }}
+    {% if filtro.ativo %}
+    {% set criterios = [] %}
+    {% for dieta in filtro.dietas|sort %}{% set _ = criterios.append(t('dieta.' ~ dieta)) %}{% endfor %}
+    {% for codigo in filtro.excluir_alergenos|sort %}
+        {% set _ = criterios.append(t('filtros.sem_alergeno', alergeno=t('alergeno.' ~ codigo)|lower)) %}
+    {% endfor %}
+    <span class="resumo-criterios">{{ t('filtros.criterios') }} {{ criterios|join(', ') }}.</span>
+    {% endif %}
+</p>
