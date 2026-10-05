@@ -142,5 +142,99 @@
       "sem_categoria_anterior": "Esta es la primera categoría.",
       "ajuda": "Puedes decir: abrir menú, mostrar platos, siguiente plato, volver, leer descripción, mostrar ingredientes, el nombre de un plato, o parar."
     }
+  },
+  "origem": {
+    "vegetal": "Vegetal",
+    "animal": "Derivado animal (leche, huevo, miel…)",
+    "carne": "Carne, ave, pescado o marisco"
+  },
+  "admin": {
+    "nome": "Panel del restaurante",
+    "link_rodape": "Área del personal",
+    "nav": "Secciones del panel",
+    "ver_cardapio": "Ver menú",
+    "obrigatorio": "obligatorio",
+    "salvar": "Guardar",
+    "cancelar": "Cancelar",
+    "voltar": "Volver",
+    "editar": "Editar",
+    "excluir": "Eliminar",
+    "salvo": "“{nome}” se guardó.",
+    "excluido": "“{nome}” se eliminó.",
+    "excluir_titulo": "Eliminar “{nome}”",
+    "excluir_pergunta": "¿Seguro que quieres eliminar “{nome}”? No se puede deshacer.",
+    "excluir_confirmar": "Sí, eliminar",
+    "login": {
+      "titulo": "Entrar al panel",
+      "usuario": "Usuario",
+      "senha": "Contraseña",
+      "entrar": "Entrar",
+      "sair": "Salir",
+      "erro": "Usuario o contraseña incorrectos.",
+      "saiu": "Saliste del panel."
+    },
+    "pratos": {
+      "titulo": "Platos",
+      "novo": "Nuevo plato",
+      "editar": "Editar plato",
+      "vazio": "No hay platos en esta categoría.",
+      "indisponivel": "No disponible",
+      "excluir_dica": "Si el plato solo está agotado hoy, mejor edítalo y desmarca “Disponible”."
+    },
+    "categorias": {
+      "titulo": "Categorías",
+      "nova": "Nueva categoría",
+      "editar": "Editar categoría",
+      "vazio": "No hay categorías.",
+      "qtd_pratos": {
+        "um": "{n} plato",
+        "outros": "{n} platos"
+      },
+      "excluir_bloqueado": "Esta categoría tiene {n} plato(s). Muévelos o elimínalos antes de eliminar la categoría."
+    },
+    "ingredientes": {
+      "titulo": "Ingredientes",
+      "novo": "Nuevo ingrediente",
+      "editar": "Editar ingrediente",
+      "explicacao": "Los alérgenos y las dietas (vegana, vegetariana) de cada plato se calculan a partir de sus ingredientes. Registra cada ingrediente con cuidado: vale para todos los platos que lo usan.",
+      "afeta": {
+        "um": "Este ingrediente se usa en {n} plato:",
+        "outros": "Este ingrediente se usa en {n} platos:"
+      }
+    },
+    "campos": {
+      "nome": "Nombre",
+      "descricao": "Descripción",
+      "preco": "Precio (R$)",
+      "preco_dica": "Ejemplo: 24,90",
+      "categoria": "Categoría",
+      "escolha": "Elige…",
+      "ingredientes": "Ingredientes",
+      "ingredientes_dica": "Los filtros de alergias y dietas usan esta lista. ¿Falta un ingrediente?",
+      "opcoes": "Opciones",
+      "disponivel": "Disponible (aparece en el menú)",
+      "imagem": "Foto",
+      "imagem_dica": "Archivos de la carpeta app/static/img/pratos.",
+      "sem_imagem": "Sin foto",
+      "imagem_alt": "Descripción de la foto",
+      "imagem_alt_dica": "Obligatoria si hay foto. Describe el plato para quien usa lector de pantalla.",
+      "ordem": "Orden",
+      "ordem_dica": "Los números menores aparecen primero.",
+      "origem": "Origen",
+      "origem_dica": "Define si los platos con este ingrediente son veganos o vegetarianos.",
+      "alergenos": "Alérgenos que contiene"
+    },
+    "erros": {
+      "titulo": "Corrige los campos de abajo",
+      "obrigatorio": "Completa este campo.",
+      "muito_longo": "Texto demasiado largo.",
+      "preco": "Ingresa un precio válido, por ejemplo 24,90.",
+      "categoria": "Elige una categoría.",
+      "imagem": "Elige una foto de la lista.",
+      "imagem_alt": "Describe la foto para quien no puede verla.",
+      "ordem": "El orden debe ser un número entero.",
+      "origem": "Elige el origen del ingrediente.",
+      "nome_repetido": "Ya existe un ingrediente con este nombre."
+    }
   }
 }

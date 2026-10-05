@@ -20,6 +20,9 @@
     --cor-topo-texto: #ffffff;
     --cor-aviso-fundo: #fff4d6;
     --cor-aviso-borda: #8a6100;
+    --cor-erro: #b3261e;                 /* 6.5:1 sobre branco */
+    --cor-sucesso-fundo: #e6f4ea;
+    --cor-sucesso-borda: #1e6b34;
 
     --cor-foco: #0b57d0;
     --cor-foco-halo: #ffffff;
@@ -424,6 +427,9 @@ main {
     margin: 0 auto;
     padding: 1.5rem 1rem 5rem;
     border-top: 1px solid var(--cor-borda-suave);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
 }
 
 /* ---------- QR Code ---------- */
@@ -442,6 +448,85 @@ main {
 .cartao-chamada { font-size: 1.3rem; font-weight: 700; margin: 1rem 0 0.25rem; }
 .cartao-url { margin: 0; word-break: break-all; }
 
+/* ---------- Painel admin ---------- */
+
+.nav-admin {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.nav-admin ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.nav-admin a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--alvo-min);
+    padding: 0.4rem 1rem;
+    border: 2px solid var(--cor-primaria);
+    border-radius: 999px;
+    font-weight: 600;
+}
+/* Seção atual: indicada por aria-current e também visualmente (não só por cor). */
+.nav-admin a[aria-current] { background: var(--cor-primaria); color: var(--cor-primaria-texto); text-decoration: underline; }
+
+.mensagens { margin-top: 1rem; }
+.mensagem {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid var(--cor-sucesso-borda);
+    background: var(--cor-sucesso-fundo);
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.secao-admin > h2 { margin: 1.5rem 0 0.5rem; }
+.lista-admin { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.lista-admin > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--cor-borda-suave);
+    border-radius: var(--raio);
+}
+.lista-admin-nome { font-weight: 700; flex: 1 1 12rem; }
+
+.form-admin { display: grid; gap: 1.25rem; max-width: 48rem; }
+.form-estreito { max-width: 28rem; }
+.campo { display: grid; gap: 0.35rem; }
+.campo label { font-weight: 700; }
+.campo .dica { margin: 0; }
+.obrigatorio { font-weight: 400; color: var(--cor-texto-suave); }
+.campo input, .campo textarea, .campo select {
+    min-height: var(--alvo-min);
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+    color: var(--cor-texto);
+    background: var(--cor-fundo);
+    border: 2px solid var(--cor-borda);
+    border-radius: var(--raio);
+    width: 100%;
+}
+.campo [aria-invalid="true"] { border-color: var(--cor-erro); border-width: 3px; }
+
+.erro-campo { margin: 0; color: var(--cor-erro); font-weight: 700; }
+
+.resumo-erros {
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    border: 3px solid var(--cor-erro);
+    border-radius: var(--raio);
+}
+.resumo-erros h2 { margin: 0 0 0.5rem; font-size: 1.2rem; }
+.resumo-erros ul { margin: 0; padding-left: 1.25rem; }
+.resumo-erros a { color: var(--cor-erro); font-weight: 600; }
+
+.btn-perigo { background: var(--cor-erro); border-color: var(--cor-erro); color: var(--cor-fundo); }
+.btn-perigo:hover { background: var(--cor-texto); border-color: var(--cor-texto); color: var(--cor-fundo); }
+
 /* ==========================================================================
    Modo: alto contraste
    ========================================================================== */
@@ -459,6 +544,9 @@ main {
     --cor-topo-texto: #ffffff;
     --cor-aviso-fundo: #000000;
     --cor-aviso-borda: #ffe14d;
+    --cor-erro: #ff8a80;
+    --cor-sucesso-fundo: #000000;
+    --cor-sucesso-borda: #ffffff;
     --cor-foco: #00e5ff;
     --cor-foco-halo: #000000;
 }

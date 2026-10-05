@@ -1,0 +1,18 @@
+{% extends "admin/base_admin.html" %}
+{% import "admin/_form.html" as f with context %}
+
+{% block titulo %}{{ t('admin.categorias.editar') if categoria else t('admin.categorias.nova') }}{% endblock %}
+
+{% block conteudo_admin %}
+{{ f.resumo_erros(erros) }}
+
+<form method="post" class="form-admin form-estreito" novalidate>
+    {{ f.csrf() }}
+    {{ f.texto('nome', t('admin.campos.nome'), valores, erros, obrigatorio=true, maximo=80) }}
+    {{ f.texto('ordem', t('admin.campos.ordem'), valores, erros, tipo='number', dica=t('admin.campos.ordem_dica')) }}
+    <div class="linha-botoes">
+        <button type="submit" class="btn btn-primario">{{ t('admin.salvar') }}</button>
+        <a class="btn" href="{{ url_for('admin.categorias') }}">{{ t('admin.cancelar') }}</a>
+    </div>
+</form>
+{% endblock %}

@@ -3,7 +3,7 @@ import os
 import click
 from flask import Flask, g, request
 
-from app.config import CONFIGS
+from app.config import CONFIGS, SECRET_KEY_DEV
 from app.extensions import db, migrate
 from app.formatting import formatar_moeda
 from app.i18n import METADADOS, resolver_idioma, traduzir, traduzir_plural, traduzir_secao
@@ -17,6 +17,8 @@ def create_app(config_name=None):
 
     config_name = config_name or os.environ.get("FLASK_CONFIG", "development")
     app.config.from_object(CONFIGS[config_name])
+    if config_name == "production" and app.config["SECRET_KEY"] == SECRET_KEY_DEV:
+        raise RuntimeError("Defina a variável de ambiente SECRET_KEY antes de rodar em produção.")
     if not app.config["SQLALCHEMY_DATABASE_URI"]:
         os.makedirs(app.instance_path, exist_ok=True)
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(app.instance_path, "menu.db")
@@ -37,6 +39,7 @@ def create_app(config_name=None):
 
 
 def _registrar_blueprints(app):
+    from app.routes.admin import admin_bp
     from app.routes.menu import menu_bp
     from app.routes.preferencias import preferencias_bp
     from app.routes.qrcode import qrcode_bp
@@ -44,6 +47,7 @@ def _registrar_blueprints(app):
     app.register_blueprint(menu_bp)
     app.register_blueprint(preferencias_bp)
     app.register_blueprint(qrcode_bp)
+    app.register_blueprint(admin_bp)
 
 
 def _registrar_contexto(app):
@@ -95,3 +99,21 @@ def _registrar_cli(app):
         from app.seed import seed_if_empty
 
         click.echo("Dados de exemplo inseridos." if seed_if_empty() else "Banco já possui dados.")
+
+    @app.cli.command("criar-admin")
+    @click.argument("login")
+    @click.password_option("--senha", prompt="Senha")
+    def criar_admin(login, senha):
+        """Cria um usuário do painel admin, ou troca a senha se ele já existir."""
+        from app.models import Usuario
+
+        if len(senha) < 8:
+            raise click.BadParameter("use pelo menos 8 caracteres.", param_hint="senha")
+        usuario = db.session.execute(db.select(Usuario).filter_by(login=login)).scalar_one_or_none()
+        novo = usuario is None
+        if novo:
+            usuario = Usuario(login=login)
+            db.session.add(usuario)
+        usuario.definir_senha(senha)
+        db.session.commit()
+        click.echo(f"Usuário '{login}' {'criado' if novo else 'atualizado'}.")

@@ -1,0 +1,24 @@
+{% extends "admin/base_admin.html" %}
+
+{% block titulo %}{{ t('admin.categorias.titulo') }}{% endblock %}
+
+{% block conteudo_admin %}
+<p><a class="btn btn-primario" href="{{ url_for('admin.nova_categoria') }}">{{ t('admin.categorias.nova') }}</a></p>
+
+{% if categorias %}
+<ul class="lista-admin" role="list">
+    {% for categoria in categorias %}
+    <li>
+        <span class="lista-admin-nome">{{ categoria.nome }}</span>
+        <span class="dica">{{ tp('admin.categorias.qtd_pratos', categoria.pratos|length) }}</span>
+        <span class="linha-botoes">
+            <a class="btn" href="{{ url_for('admin.editar_categoria', categoria_id=categoria.id) }}">{{ t('admin.editar') }}<span class="apenas-leitor"> {{ categoria.nome }}</span></a>
+            <a class="btn" href="{{ url_for('admin.excluir_categoria', categoria_id=categoria.id) }}">{{ t('admin.excluir') }}<span class="apenas-leitor"> {{ categoria.nome }}</span></a>
+        </span>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>{{ t('admin.categorias.vazio') }}</p>
+{% endif %}
+{% endblock %}

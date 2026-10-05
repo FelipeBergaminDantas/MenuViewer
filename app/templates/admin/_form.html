@@ -1,0 +1,46 @@
+{#
+  Macros dos formulários do admin. Importe com `with context` (usam `t`).
+  Erros: {campo: chave de tradução}. O `id` de cada campo é o próprio nome,
+  para o resumo de erros poder apontar para ele.
+#}
+
+{% macro resumo_erros(erros) %}
+{% if erros %}
+<div class="resumo-erros" tabindex="-1" data-focar-ao-carregar aria-labelledby="resumo-erros-titulo">
+    <h2 id="resumo-erros-titulo">{{ t('admin.erros.titulo') }}</h2>
+    <ul>
+        {% for campo, chave in erros.items() %}
+        <li><a href="#{{ campo }}">{{ t(chave) }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endmacro %}
+
+{# Atributos de acessibilidade do campo: liga a dica e o erro ao input. #}
+{% macro aria(erros, campo, dica=false) -%}
+{%- set ids = [] -%}
+{%- if dica %}{% set _ = ids.append(campo ~ '-dica') %}{% endif -%}
+{%- if erros.get(campo) %}{% set _ = ids.append(campo ~ '-erro') %} aria-invalid="true"{% endif -%}
+{%- if ids %} aria-describedby="{{ ids|join(' ') }}"{% endif -%}
+{%- endmacro %}
+
+{% macro erro(erros, campo) %}
+{% if erros.get(campo) %}<p class="erro-campo" id="{{ campo }}-erro"><span aria-hidden="true">⚠</span> {{ t(erros[campo]) }}</p>{% endif %}
+{% endmacro %}
+
+{% macro texto(campo, rotulo, valores, erros, tipo='text', obrigatorio=false, maximo=none, dica=none, extra='') %}
+<div class="campo">
+    <label for="{{ campo }}">{{ rotulo }}{% if obrigatorio %} <span class="obrigatorio">({{ t('admin.obrigatorio') }})</span>{% endif %}</label>
+    {% if dica %}<p class="dica" id="{{ campo }}-dica">{{ dica }}</p>{% endif %}
+    {{ erro(erros, campo) }}
+    {% if tipo == 'textarea' %}
+    <textarea id="{{ campo }}" name="{{ campo }}" rows="3"{% if maximo %} maxlength="{{ maximo }}"{% endif %}{{ aria(erros, campo, dica) }}>{{ valores.get(campo, '') }}</textarea>
+    {% else %}
+    <input type="{{ tipo }}" id="{{ campo }}" name="{{ campo }}" value="{{ valores.get(campo, '') }}"
+           {% if obrigatorio %}required{% endif %}{% if maximo %} maxlength="{{ maximo }}"{% endif %} {{ extra }}{{ aria(erros, campo, dica) }}>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro csrf() %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endmacro %}

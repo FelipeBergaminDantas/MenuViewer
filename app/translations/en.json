@@ -142,5 +142,99 @@
       "sem_categoria_anterior": "This is the first category.",
       "ajuda": "You can say: open menu, show dishes, next dish, back, read description, show ingredients, a dish name, or stop."
     }
+  },
+  "origem": {
+    "vegetal": "Plant-based",
+    "animal": "Animal product (milk, egg, honey…)",
+    "carne": "Meat, poultry, fish or seafood"
+  },
+  "admin": {
+    "nome": "Restaurant panel",
+    "link_rodape": "Staff area",
+    "nav": "Panel sections",
+    "ver_cardapio": "View menu",
+    "obrigatorio": "required",
+    "salvar": "Save",
+    "cancelar": "Cancel",
+    "voltar": "Back",
+    "editar": "Edit",
+    "excluir": "Delete",
+    "salvo": "“{nome}” was saved.",
+    "excluido": "“{nome}” was deleted.",
+    "excluir_titulo": "Delete “{nome}”",
+    "excluir_pergunta": "Are you sure you want to delete “{nome}”? This cannot be undone.",
+    "excluir_confirmar": "Yes, delete",
+    "login": {
+      "titulo": "Sign in to the panel",
+      "usuario": "Username",
+      "senha": "Password",
+      "entrar": "Sign in",
+      "sair": "Sign out",
+      "erro": "Incorrect username or password.",
+      "saiu": "You have signed out."
+    },
+    "pratos": {
+      "titulo": "Dishes",
+      "novo": "New dish",
+      "editar": "Edit dish",
+      "vazio": "No dishes in this category.",
+      "indisponivel": "Unavailable",
+      "excluir_dica": "If the dish is only out of stock today, edit it and uncheck “Available” instead."
+    },
+    "categorias": {
+      "titulo": "Categories",
+      "nova": "New category",
+      "editar": "Edit category",
+      "vazio": "No categories yet.",
+      "qtd_pratos": {
+        "um": "{n} dish",
+        "outros": "{n} dishes"
+      },
+      "excluir_bloqueado": "This category has {n} dish(es). Move or delete them before deleting the category."
+    },
+    "ingredientes": {
+      "titulo": "Ingredients",
+      "novo": "New ingredient",
+      "editar": "Edit ingredient",
+      "explicacao": "Each dish's allergens and diets (vegan, vegetarian) are calculated from its ingredients. Register each ingredient carefully: it applies to every dish that uses it.",
+      "afeta": {
+        "um": "This ingredient is used in {n} dish:",
+        "outros": "This ingredient is used in {n} dishes:"
+      }
+    },
+    "campos": {
+      "nome": "Name",
+      "descricao": "Description",
+      "preco": "Price (R$)",
+      "preco_dica": "Example: 24.90",
+      "categoria": "Category",
+      "escolha": "Choose…",
+      "ingredientes": "Ingredients",
+      "ingredientes_dica": "Allergy and diet filters use this list. Missing an ingredient?",
+      "opcoes": "Options",
+      "disponivel": "Available (shown on the menu)",
+      "imagem": "Photo",
+      "imagem_dica": "Files in the app/static/img/pratos folder.",
+      "sem_imagem": "No photo",
+      "imagem_alt": "Photo description",
+      "imagem_alt_dica": "Required if there is a photo. Describe the dish for screen reader users.",
+      "ordem": "Order",
+      "ordem_dica": "Lower numbers appear first.",
+      "origem": "Origin",
+      "origem_dica": "Determines whether dishes with this ingredient are vegan or vegetarian.",
+      "alergenos": "Allergens it contains"
+    },
+    "erros": {
+      "titulo": "Please fix the fields below",
+      "obrigatorio": "Fill in this field.",
+      "muito_longo": "Text is too long.",
+      "preco": "Enter a valid price, for example 24.90.",
+      "categoria": "Choose a category.",
+      "imagem": "Choose a photo from the list.",
+      "imagem_alt": "Describe the photo for people who cannot see it.",
+      "ordem": "Order must be a whole number.",
+      "origem": "Choose the ingredient's origin.",
+      "nome_repetido": "An ingredient with this name already exists."
+    }
   }
 }

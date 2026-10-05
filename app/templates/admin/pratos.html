@@ -1,0 +1,34 @@
+{% extends "admin/base_admin.html" %}
+
+{% block titulo %}{{ t('admin.pratos.titulo') }}{% endblock %}
+
+{% block conteudo_admin %}
+<p><a class="btn btn-primario" href="{{ url_for('admin.novo_prato') }}">{{ t('admin.pratos.novo') }}</a></p>
+
+{% if not categorias %}
+<p>{{ t('admin.categorias.vazio') }} <a href="{{ url_for('admin.nova_categoria') }}">{{ t('admin.categorias.nova') }}</a></p>
+{% endif %}
+
+{% for categoria in categorias %}
+<section class="secao-admin" aria-labelledby="cat-{{ categoria.id }}">
+    <h2 id="cat-{{ categoria.id }}">{{ categoria.nome }}</h2>
+    {% if categoria.pratos %}
+    <ul class="lista-admin" role="list">
+        {% for prato in categoria.pratos %}
+        <li>
+            <span class="lista-admin-nome">{{ prato.nome }}</span>
+            <span>{{ prato.preco|moeda }}</span>
+            {% if not prato.disponivel %}<span class="tag">{{ t('admin.pratos.indisponivel') }}</span>{% endif %}
+            <span class="linha-botoes">
+                <a class="btn" href="{{ url_for('admin.editar_prato', prato_id=prato.id) }}">{{ t('admin.editar') }}<span class="apenas-leitor"> {{ prato.nome }}</span></a>
+                <a class="btn" href="{{ url_for('admin.excluir_prato', prato_id=prato.id) }}">{{ t('admin.excluir') }}<span class="apenas-leitor"> {{ prato.nome }}</span></a>
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="dica">{{ t('admin.pratos.vazio') }}</p>
+    {% endif %}
+</section>
+{% endfor %}
+{% endblock %}

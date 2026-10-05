@@ -1,0 +1,26 @@
+{% extends "admin/base_admin.html" %}
+
+{% block titulo %}{{ t('admin.ingredientes.titulo') }}{% endblock %}
+
+{% block conteudo_admin %}
+<p class="aviso">{{ t('admin.ingredientes.explicacao') }}</p>
+<p><a class="btn btn-primario" href="{{ url_for('admin.novo_ingrediente') }}">{{ t('admin.ingredientes.novo') }}</a></p>
+
+<ul class="lista-admin" role="list">
+    {% for ingrediente in ingredientes %}
+    <li>
+        <span class="lista-admin-nome">{{ ingrediente.nome }}</span>
+        <span class="dica">
+            {{- t('origem.' ~ ingrediente.origem.value) -}}
+            {% if ingrediente.alergenos %} · {{ t('prato.contem') }}
+            {% for a in ingrediente.alergenos %}{{ t('alergeno.' ~ a.codigo)|lower }}{{ ", " if not loop.last }}{% endfor %}
+            {%- endif -%}
+        </span>
+        <span class="linha-botoes">
+            <a class="btn" href="{{ url_for('admin.editar_ingrediente', ingrediente_id=ingrediente.id) }}">{{ t('admin.editar') }}<span class="apenas-leitor"> {{ ingrediente.nome }}</span></a>
+            <a class="btn" href="{{ url_for('admin.excluir_ingrediente', ingrediente_id=ingrediente.id) }}">{{ t('admin.excluir') }}<span class="apenas-leitor"> {{ ingrediente.nome }}</span></a>
+        </span>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

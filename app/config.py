@@ -6,9 +6,13 @@ para que o mesmo código rode em dev, teste e produção sem alterações.
 
 import os
 
+# Só serve para desenvolvimento: em produção o app se recusa a subir com ela,
+# porque quem conhece a chave consegue forjar a sessão do painel admin.
+SECRET_KEY_DEV = "dev-inseguro-troque-em-producao"
+
 
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-inseguro-troque-em-producao")
+    SECRET_KEY = os.environ.get("SECRET_KEY", SECRET_KEY_DEV)
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")  # None -> SQLite em instance/
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -27,6 +31,9 @@ class Config:
     PREFS_COOKIE_MAX_AGE = 60 * 60 * 24 * 365  # 1 ano
     PREFS_COOKIE_SECURE = False
 
+    # Sessão do painel admin: some ao fechar o navegador.
+    SESSION_COOKIE_SAMESITE = "Lax"
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -40,6 +47,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     PREFS_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
 
 
 CONFIGS = {

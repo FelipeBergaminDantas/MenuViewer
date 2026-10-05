@@ -1,0 +1,83 @@
+{% extends "admin/base_admin.html" %}
+{% import "admin/_form.html" as f with context %}
+
+{% block titulo %}{{ t('admin.pratos.editar') if prato else t('admin.pratos.novo') }}{% endblock %}
+
+{% block conteudo_admin %}
+{{ f.resumo_erros(erros) }}
+
+<form method="post" class="form-admin" novalidate>
+    {{ f.csrf() }}
+    {{ f.texto('nome', t('admin.campos.nome'), valores, erros, obrigatorio=true, maximo=120) }}
+    {{ f.texto('descricao', t('admin.campos.descricao'), valores, erros, tipo='textarea', maximo=2000) }}
+    {{ f.texto('preco', t('admin.campos.preco'), valores, erros, obrigatorio=true,
+               dica=t('admin.campos.preco_dica'), extra='inputmode=decimal') }}
+
+    <div class="campo">
+        <label for="categoria_id">{{ t('admin.campos.categoria') }} <span class="obrigatorio">({{ t('admin.obrigatorio') }})</span></label>
+        {{ f.erro(erros, 'categoria_id') }}
+        <select id="categoria_id" name="categoria_id" required{{ f.aria(erros, 'categoria_id') }}>
+            <option value="">{{ t('admin.campos.escolha') }}</option>
+            {% for categoria in categorias %}
+            <option value="{{ categoria.id }}" {% if valores.get('categoria_id') == categoria.id|string %}selected{% endif %}>{{ categoria.nome }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <fieldset class="grupo">
+        <legend>{{ t('admin.campos.ingredientes') }}</legend>
+        <p class="dica">{{ t('admin.campos.ingredientes_dica') }}
+            <a href="{{ url_for('admin.novo_ingrediente') }}">{{ t('admin.ingredientes.novo') }}</a></p>
+        <ul class="lista-opcoes" role="list">
+            {% for ingrediente in ingredientes %}
+            <li>
+                <label class="opcao">
+                    <input type="checkbox" name="ingredientes" value="{{ ingrediente.id }}"
+                           {% if ingrediente.id|string in valores.get('ingredientes', []) %}checked{% endif %}>
+                    <span>{{ ingrediente.nome }}</span>
+                </label>
+            </li>
+            {% endfor %}
+        </ul>
+    </fieldset>
+
+    <fieldset class="grupo">
+        <legend>{{ t('admin.campos.opcoes') }}</legend>
+        <ul class="lista-opcoes" role="list">
+            <li>
+                <label class="opcao">
+                    <input type="checkbox" name="picante" value="1" {% if valores.get('picante') %}checked{% endif %}>
+                    <span>{{ t('prato.picante') }}</span>
+                </label>
+            </li>
+            <li>
+                <label class="opcao">
+                    <input type="checkbox" name="disponivel" value="1" {% if valores.get('disponivel') %}checked{% endif %}>
+                    <span>{{ t('admin.campos.disponivel') }}</span>
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+
+    <div class="campo">
+        <label for="imagem">{{ t('admin.campos.imagem') }}</label>
+        <p class="dica" id="imagem-dica">{{ t('admin.campos.imagem_dica') }}</p>
+        {{ f.erro(erros, 'imagem') }}
+        <select id="imagem" name="imagem"{{ f.aria(erros, 'imagem', true) }}>
+            <option value="">{{ t('admin.campos.sem_imagem') }}</option>
+            {% for arquivo in imagens %}
+            <option {% if valores.get('imagem') == arquivo %}selected{% endif %}>{{ arquivo }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {{ f.texto('imagem_alt', t('admin.campos.imagem_alt'), valores, erros, maximo=300,
+               dica=t('admin.campos.imagem_alt_dica')) }}
+    {{ f.texto('ordem', t('admin.campos.ordem'), valores, erros, tipo='number',
+               dica=t('admin.campos.ordem_dica')) }}
+
+    <div class="linha-botoes">
+        <button type="submit" class="btn btn-primario">{{ t('admin.salvar') }}</button>
+        <a class="btn" href="{{ url_for('admin.pratos') }}">{{ t('admin.cancelar') }}</a>
+    </div>
+</form>
+{% endblock %}

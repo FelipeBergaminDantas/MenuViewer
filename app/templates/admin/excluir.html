@@ -1,0 +1,23 @@
+{# Confirmação de exclusão, compartilhada por pratos, categorias e ingredientes. #}
+{% extends "admin/base_admin.html" %}
+{% import "admin/_form.html" as f with context %}
+
+{% block titulo %}{{ t('admin.excluir_titulo', nome=nome) }}{% endblock %}
+
+{% block conteudo_admin %}
+{% if bloqueio %}
+<p class="aviso" tabindex="-1" data-focar-ao-carregar>{{ bloqueio }}</p>
+<p><a class="btn" href="{{ voltar }}">{{ t('admin.voltar') }}</a></p>
+{% else %}
+<p>{{ t('admin.excluir_pergunta', nome=nome) }}</p>
+{% if dica %}<p class="dica">{{ dica }}</p>{% endif %}
+{% if afetados %}
+<p class="aviso">{{ tp('admin.ingredientes.afeta', afetados|length) }} {{ afetados|join(', ') }}.</p>
+{% endif %}
+<form method="post" class="linha-botoes">
+    {{ f.csrf() }}
+    <button type="submit" class="btn btn-perigo">{{ t('admin.excluir_confirmar') }}</button>
+    <a class="btn" href="{{ voltar }}">{{ t('admin.cancelar') }}</a>
+</form>
+{% endif %}
+{% endblock %}

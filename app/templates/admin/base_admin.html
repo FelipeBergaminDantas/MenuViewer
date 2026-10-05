@@ -1,0 +1,41 @@
+{#
+  Layout das páginas do painel admin. Reaproveita o base.html do cardápio, então
+  o painel de acessibilidade (fonte, contraste, idioma) também vale aqui.
+#}
+{% extends "base.html" %}
+
+{% block title %}{{ self.titulo() }} · {{ t('admin.nome') }}{% endblock %}
+
+{% block content %}
+{% if usuario %}
+<nav class="nav-admin" aria-label="{{ t('admin.nav') }}">
+    <ul role="list">
+        {% for endpoint, chave, termo in [('admin.pratos', 'admin.pratos.titulo', 'prato'),
+                                          ('admin.categorias', 'admin.categorias.titulo', 'categoria'),
+                                          ('admin.ingredientes', 'admin.ingredientes.titulo', 'ingrediente')] %}
+        <li><a href="{{ url_for(endpoint) }}"
+               {% if request.endpoint == endpoint %}aria-current="page"{% elif termo in request.endpoint %}aria-current="true"{% endif %}>{{ t(chave) }}</a></li>
+        {% endfor %}
+        <li><a href="{{ url_for('menu.index') }}">{{ t('admin.ver_cardapio') }}</a></li>
+    </ul>
+    <form method="post" action="{{ url_for('admin.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn">{{ t('admin.login.sair') }} <span class="apenas-leitor">({{ usuario.login }})</span></button>
+    </form>
+</nav>
+{% endif %}
+
+{% with mensagens = get_flashed_messages(with_categories=true) %}
+{% if mensagens %}
+{# Recebe o foco ao carregar para o leitor de tela anunciar o resultado da ação. #}
+<div class="mensagens" tabindex="-1" data-focar-ao-carregar>
+    {% for categoria, mensagem in mensagens %}
+    <p class="mensagem mensagem-{{ categoria }}">{{ mensagem }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<h1>{% block titulo %}{% endblock %}</h1>
+{% block conteudo_admin %}{% endblock %}
+{% endblock %}

@@ -8,6 +8,8 @@ existe o risco de um prato marcado como "sem glúten" conter pão.
 
 import enum
 
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from app.extensions import db
 
 
@@ -55,6 +57,12 @@ class Ingrediente(db.Model):
     alergenos = db.relationship(
         "Alergeno", secondary=ingrediente_alergeno, lazy="selectin", order_by="Alergeno.ordem"
     )
+    # Lado inverso de `Prato.ingredientes`. Faz o SQLAlchemy apagar as linhas de
+    # `prato_ingrediente` ao excluir um ingrediente (o SQLite ignora ON DELETE
+    # CASCADE sem `PRAGMA foreign_keys`).
+    pratos = db.relationship(
+        "Prato", secondary=prato_ingrediente, back_populates="ingredientes", order_by="Prato.nome"
+    )
 
     def __repr__(self):
         return f"<Ingrediente {self.nome}>"
@@ -91,7 +99,11 @@ class Prato(db.Model):
     categoria = db.relationship("Categoria", back_populates="pratos")
 
     ingredientes = db.relationship(
-        "Ingrediente", secondary=prato_ingrediente, lazy="selectin", order_by="Ingrediente.nome"
+        "Ingrediente",
+        secondary=prato_ingrediente,
+        back_populates="pratos",
+        lazy="selectin",
+        order_by="Ingrediente.nome",
     )
 
     @property
@@ -113,3 +125,22 @@ class Prato(db.Model):
 
     def __repr__(self):
         return f"<Prato {self.nome}>"
+
+
+class Usuario(db.Model):
+    """Pessoa da equipe com acesso ao painel admin (criada com `flask criar-admin`)."""
+
+    __tablename__ = "usuarios"
+
+    id = db.Column(db.Integer, primary_key=True)
+    login = db.Column(db.String(80), nullable=False, unique=True)
+    senha_hash = db.Column(db.String(256), nullable=False)
+
+    def definir_senha(self, senha):
+        self.senha_hash = generate_password_hash(senha)
+
+    def verificar_senha(self, senha):
+        return check_password_hash(self.senha_hash, senha)
+
+    def __repr__(self):
+        return f"<Usuario {self.login}>"

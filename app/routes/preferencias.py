@@ -8,12 +8,12 @@ O servidor é a única fonte de validação dos valores.
 """
 
 from dataclasses import asdict
-from urllib.parse import urlsplit
 
-from flask import Blueprint, current_app, g, jsonify, redirect, request, url_for
+from flask import Blueprint, current_app, g, jsonify, redirect, request
 
 from app.i18n import traduzir
 from app.preferences import BOOLEANOS
+from app.seguranca import destino_seguro
 
 preferencias_bp = Blueprint("preferencias", __name__)
 
@@ -36,7 +36,7 @@ def atualizar():
             }
         )
     else:
-        resposta = redirect(_destino_seguro(request.form.get("next")))
+        resposta = redirect(destino_seguro(request.form.get("next")))
 
     config = current_app.config
     resposta.set_cookie(
@@ -60,11 +60,3 @@ def _anuncio(prefs):
         return traduzir(f"a11y.{acao}_{estado}")
     return ""
 
-
-def _destino_seguro(destino):
-    """Aceita só caminhos relativos do próprio site (evita open redirect)."""
-    if destino:
-        partes = urlsplit(destino)
-        if not partes.scheme and not partes.netloc and destino.startswith("/") and not destino.startswith("//"):
-            return destino
-    return url_for("menu.index")

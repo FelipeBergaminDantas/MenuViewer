@@ -1,0 +1,28 @@
+{% extends "admin/base_admin.html" %}
+{% import "admin/_form.html" as f with context %}
+
+{% block titulo %}{{ t('admin.login.titulo') }}{% endblock %}
+
+{% block conteudo_admin %}
+<form method="post" action="{{ url_for('admin.login') }}" class="form-admin form-estreito">
+    {{ f.csrf() }}
+    <input type="hidden" name="next" value="{{ proximo }}">
+    {% if erro %}
+    <p class="erro-campo" id="login-erro" tabindex="-1" data-focar-ao-carregar>
+        <span aria-hidden="true">⚠</span> {{ t(erro) }}
+    </p>
+    {% endif %}
+    <div class="campo">
+        <label for="login">{{ t('admin.login.usuario') }}</label>
+        <input type="text" id="login" name="login" required autocomplete="username" autocapitalize="none"
+               value="{{ request.form.get('login', '') }}"{% if erro %} aria-describedby="login-erro"{% endif %}>
+    </div>
+    <div class="campo">
+        <label for="senha">{{ t('admin.login.senha') }}</label>
+        <input type="password" id="senha" name="senha" required autocomplete="current-password">
+    </div>
+    <div class="linha-botoes">
+        <button type="submit" class="btn btn-primario">{{ t('admin.login.entrar') }}</button>
+    </div>
+</form>
+{% endblock %}
